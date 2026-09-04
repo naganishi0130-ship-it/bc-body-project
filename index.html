@@ -12,9 +12,11 @@
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Yu Gothic',sans-serif;background:#0f1419;color:#e8e8e8;padding-bottom:80px;min-height:100vh;-webkit-user-select:none;user-select:none}
 .container{max-width:500px;margin:0 auto}
-.header{background:linear-gradient(135deg,#1A5276,#2874A6);padding:16px;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.header{background:linear-gradient(135deg,#1A5276,#2874A6);padding:16px;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.3);display:flex;justify-content:space-between;align-items:center}
+.header .title{flex:1}
 .header h1{font-size:18px;font-weight:700;color:#fff;letter-spacing:1px}
 .header .sub{font-size:11px;color:#B3D4F0;margin-top:2px}
+.header .settings-btn{background:rgba(255,255,255,.2);border:none;color:#fff;width:36px;height:36px;border-radius:50%;font-size:18px;cursor:pointer}
 .tabbar{position:fixed;bottom:0;left:0;right:0;background:#1a1f26;border-top:1px solid #2a2f36;display:flex;padding:8px 0;z-index:1000;padding-bottom:max(8px,env(safe-area-inset-bottom))}
 .tab{flex:1;text-align:center;padding:6px 4px;color:#7a8290;cursor:pointer;font-size:10px}
 .tab.active{color:#F39C12}
@@ -43,15 +45,18 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Yu Gothic',sa
 .item .n{font-size:13px;font-weight:600}
 .item .d{font-size:11px;color:#7a8290;margin-top:2px}
 .item .detail-btn{background:#F39C12;color:#fff;border:none;padding:4px 8px;border-radius:6px;font-size:10px;cursor:pointer;flex-shrink:0}
+.item .edit-btn{background:#34495E;color:#fff;border:none;padding:4px 8px;border-radius:6px;font-size:10px;cursor:pointer;flex-shrink:0;margin-left:4px}
 .item.done .n{text-decoration:line-through;opacity:.5}
 .btn{background:#F39C12;color:#fff;border:none;padding:11px 16px;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;width:100%;margin-top:6px}
 .btn:active{transform:scale(.98)}
 .btn.sec{background:#34495E}
 .btn.dan{background:#C0392B}
+.btn.suc{background:#27AE60}
 .btn-row{display:flex;gap:6px}
 .btn-row .btn{margin-top:0}
 .tip{background:rgba(243,156,18,.1);border-left:3px solid #F39C12;padding:8px 10px;border-radius:6px;font-size:11px;color:#F0D896;margin-top:8px;line-height:1.5}
 .warn{background:rgba(231,76,60,.1);border-left:3px solid #E74C3C;padding:8px 10px;border-radius:6px;font-size:11px;color:#F5B7B1;margin-top:8px;line-height:1.5}
+.phase-badge{display:inline-block;background:rgba(255,255,255,.2);padding:3px 8px;border-radius:12px;font-size:10px;margin-left:6px}
 .cal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
 .cal-title{font-size:16px;font-weight:700}
 .cal-nav{background:#22282f;border:none;color:#fff;width:32px;height:32px;border-radius:50%;font-size:16px}
@@ -76,12 +81,15 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Yu Gothic',sa
 .stat-c.u{color:#E74C3C}
 .fg{margin-bottom:10px}
 .fg label{display:block;font-size:11px;color:#7a8290;margin-bottom:3px;letter-spacing:1px;text-transform:uppercase}
-.fg input{width:100%;background:#22282f;border:1px solid #2a2f36;color:#fff;padding:9px 10px;border-radius:8px;font-size:13px}
-.fg input:focus{outline:none;border-color:#F39C12}
-.meal{background:#22282f;border-radius:10px;padding:10px;margin-bottom:6px}
+.fg input,.fg select,.fg textarea{width:100%;background:#22282f;border:1px solid #2a2f36;color:#fff;padding:9px 10px;border-radius:8px;font-size:13px;font-family:inherit}
+.fg input:focus,.fg select:focus,.fg textarea:focus{outline:none;border-color:#F39C12}
+.fg .help{font-size:10px;color:#7a8290;margin-top:3px}
+.meal{background:#22282f;border-radius:10px;padding:10px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.meal .info{flex:1;min-width:0}
 .meal .t{font-size:10px;color:#F39C12;font-weight:700;letter-spacing:1px}
 .meal .n{font-size:13px;margin-top:2px}
 .meal .m{font-size:10px;color:#7a8290;margin-top:2px}
+.meal .actions{display:flex;gap:4px;flex-shrink:0}
 .mbg{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.7);z-index:2000;align-items:flex-start;justify-content:center;padding:20px;overflow-y:auto}
 .mbg.show{display:flex}
 .modal{background:#1a1f26;border-radius:14px;padding:18px;width:100%;max-width:400px;border:1px solid #2a2f36;margin-top:40px;margin-bottom:40px}
@@ -96,11 +104,23 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Yu Gothic',sa
 .empty .ic{font-size:40px;margin-bottom:8px;opacity:.5}
 .chart{background:#1a1f26;border-radius:10px;padding:14px;margin-bottom:10px;border:1px solid #2a2f36}
 .section-h{font-size:12px;color:#F39C12;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin:16px 0 6px;padding-bottom:3px;border-bottom:1px solid #2a2f36}
+.phase-selector{display:flex;gap:6px;margin-bottom:12px}
+.phase-selector .phase-opt{flex:1;background:#22282f;border:2px solid #2a2f36;padding:10px 6px;border-radius:8px;text-align:center;cursor:pointer;transition:all .2s}
+.phase-selector .phase-opt.active{border-color:#F39C12;background:rgba(243,156,18,.1)}
+.phase-selector .phase-opt .p-name{font-size:11px;font-weight:700;color:#F39C12}
+.phase-selector .phase-opt .p-kcal{font-size:14px;font-weight:700;margin:2px 0}
+.phase-selector .phase-opt .p-detail{font-size:9px;color:#7a8290}
 </style>
 </head>
 <body>
 <div class="container">
-<div class="header"><h1>💪 BC BODY PROJECT</h1><div class="sub">目標:66kg/8% - 週4ジム × 4週ローテ</div></div>
+<div class="header">
+<div class="title">
+<h1 id="app-title">💪 BC BODY PROJECT</h1>
+<div class="sub" id="app-sub">目標:66kg/8% - 週4ジム × 4週ローテ</div>
+</div>
+<button class="settings-btn" onclick="ms()">⚙️</button>
+</div>
 <div class="content">
 <div class="view active" id="v-today"><div id="hero"></div><div id="menu"></div></div>
 <div class="view" id="v-cal">
@@ -114,8 +134,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Yu Gothic',sa
 <div class="card"><h2>🎯 目標までの距離</h2><div id="gp"></div></div>
 </div>
 <div class="view" id="v-menu">
-<div class="card"><h2>🍽️ 今日の食事目標</h2><div id="dn"></div></div>
-<div class="card"><h2>📋 食事プラン</h2><div id="mp"></div></div>
+<div class="card"><h2>🍽️ 今日の食事目標 <span class="phase-badge" id="phase-badge"></span></h2><div id="dn"></div></div>
+<div class="card"><h2>📋 食事プラン</h2><div id="mp"></div><button class="btn sec" onclick="am()">+ 食事を追加</button></div>
 <div class="section-h">💊 サプリメント</div><div class="card"><div id="sp"></div></div>
 <div class="section-h">📚 メニュー詳細</div>
 <div class="btn-row"><button class="btn" onclick="el('push')">Push</button><button class="btn" onclick="el('pull')">Pull</button></div>
@@ -135,6 +155,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Yu Gothic',sa
 const CYCLE=['push','pull','legs','cond'];
 const LBL={push:{n:'PUSH',f:'胸・肩・三頭',c:'push',e:'💪'},pull:{n:'PULL',f:'背中・二頭',c:'pull',e:'🎯'},legs:{n:'LEGS+CORE',f:'脚・体幹',c:'legs',e:'🦵'},cond:{n:'CONDITIONING',f:'心肺・HIIT',c:'cond',e:'🔥'},off:{n:'OFF',f:'休養・柔軟性',c:'off',e:'🧘'}};
 const WT={1:{n:'ハイパートロフィー',d:'筋肥大・8-10回・90秒休'},2:{n:'テンポ&コントロール',d:'コントロール・8回・4-1-1-0テンポ'},3:{n:'メタボリック',d:'代謝促進・12-15回・45秒休'},4:{n:'ストレングス',d:'高重量・5-6回・120秒休'}};
+const PHASE={
+1:{n:'Phase 1',d:'筋肥大メイン',kcal:2400,p:140,f:70,c:315},
+2:{n:'Phase 2',d:'徐々に絞る',kcal:2200,p:145,f:60,c:275},
+3:{n:'Phase 3',d:'仕上げ・カット',kcal:1950,p:150,f:55,c:220}
+};
 const EX={
 push:[
 {n:'チェストプレス基本',s:'4×8-10',t:'大胸筋',how:['マシンに座り、軽い重量に設定','座面高さ:ハンドルが胸の真ん中','背もたれにしっかり寄りかかる(お尻・背中密着)','両足は床にしっかりつける','両手でハンドルを握る(手首曲げない)','息を吸いながら2秒で前に押し出す','肘は伸ばし切らない(少し曲げて止める)','息を吐きながら3秒でゆっくり戻す'],pt:['肩甲骨を寄せて胸を張る','腰を背もたれに密着','ハンドルは胸の真ん中に向かう','肘の高さは肩より少し下'],ng:['反動でガシャンと押す','肩がすくむ','腰を反らせる','肘を完全に伸ばし切る']},
@@ -144,7 +169,7 @@ push:[
 {n:'ショルダープレス片手',s:'3×10',t:'三角筋',how:['マシンに片手で座る','反対の手はマシンや膝の上','体をやや斜めにする','片手で押し上げる','ゆっくり戻す','10回×3セット×左右'],pt:['体幹も同時に鍛える','左右差を確認','片側集中で意識しやすい'],ng:['体がねじれる','反対の肩がすくむ','重すぎる重量']},
 {n:'プッシュアッププラス',s:'3×10',t:'前鋸筋',how:['プッシュアップ姿勢を作る','両手は肩幅、足は揃える','普通の腕立てを1回','肘を完全に伸ばし切る','その位置から「肩甲骨を前に押し出す」','体が1-2cm持ち上がる感覚','肩甲骨が背中で離れる感覚','ゆっくり戻る'],pt:['プッシュアップの上半分にフォーカス','肩甲骨の動きが命','前鋸筋(胸脇のギザギザ)に効く'],ng:['ただの腕立てになる','肩甲骨動かない','反動使う']},
 {n:'チェストドロップセット',s:'1×10→10→10',t:'大胸筋',how:['最初は通常より少し軽い重量で10回','終わったらすぐ重量を落とす(20-30%)','休まず10回','さらに重量落として10回','合計30回連続で追い込み'],pt:['重量を段階的に下げて追い込み','セット間の休憩なし','最後の10回は限界OK'],ng:['休憩を挟む','重量落とすの遅い','フォーム崩れる']},
-{n:'アブベンチツイスト',s:'3×12/側',t:'腹斜筋',how:['ベンチ傾斜を軽め(20度)に設定','足首を上のパッドに固定','仰向けに寝る、膝90度','両手は頭の横','息を吐きながら上体を起こしつつ、右肘を左膝に近づけるようにねじる','ゆねじる動作を丁寧に','次は左肘を右膝','左右交互に各12回'],pt:['ねじる動作を丁寧に','お腹を縮める感覚','反動使わない','Vライン作りに直結'],ng:['反動で起き上がる','首だけひねる','呼吸止める']},
+{n:'アブベンチツイスト',s:'3×12/側',t:'腹斜筋',how:['ベンチ傾斜を軽め(20度)に設定','足首を上のパッドに固定','仰向けに寝る、膝90度','両手は頭の横','息を吐きながら上体を起こしつつ、右肘を左膝に近づけるようにねじる','ねじる動作を丁寧に','次は左肘を右膝','左右交互に各12回'],pt:['ねじる動作を丁寧に','お腹を縮める感覚','反動使わない','Vライン作りに直結'],ng:['反動で起き上がる','首だけひねる','呼吸止める']},
 {n:'サイドプランク',s:'3×30秒/側',t:'腹斜筋・体幹',how:['マットに横向きに寝る','下の肘を肩の真下について支える','足は揃えるか、上の足を前にずらす','お尻を浮かせて、頭→お尻→かかとが一直線','30秒キープ','呼吸止めない','反対側も'],pt:['お尻が落ちない','お尻が上がりすぎない','頭からかかとまで一直線','辛い時は膝ついてOK'],ng:['お尻が下がる','お尻が上がる','呼吸止める']}
 ],
 pull:[
@@ -214,7 +239,7 @@ legs:[{n:'PNFハム',s:'60秒/側',how:['マスト5種目参照'],pt:['深く伸
 cond:[{n:'全身軽めストレッチ',s:'10分',how:['主要部位を全体的に','各部位30秒程度'],pt:['気持ちよく伸ばす']},
 {n:'呼吸整え',s:'3分',how:['深呼吸','心拍を落ち着かせる'],pt:['4秒吸って8秒吐く']}]
 };
-const MEAL=[
+const DEFAULT_MEAL=[
 {t:'朝食',n:'ソイ20g + ゆで卵2個 + おにぎり1個 + バナナ',k:600,p:40},
 {t:'間食',n:'プロテインバー or ナッツ少量',k:250,p:15},
 {t:'昼食',n:'もち麦ご飯 + 焼き魚 + 味噌汁 + 海藻サラダ + 納豆',k:700,p:45},
@@ -230,9 +255,20 @@ const SUP=[
 {n:'フィッシュオイル',a:'毎日2-3g(関節保護・炎症抑制)',p:'★★ 推奨'},
 {n:'マルチビタミン',a:'朝食後',p:'★ 任意'}
 ];
-const s={cv:'today',ci:0,wn:1,dn:0,cm:new Date(),tc:{},w:[],ch:[]};
-function ss(){try{localStorage.setItem('bc',JSON.stringify({ci:s.ci,wn:s.wn,dn:s.dn,tc:s.tc,w:s.w,ch:s.ch,lu:new Date().toISOString().split('T')[0]}))}catch(e){}}
-function ls(){try{const r=localStorage.getItem('bc');if(!r)return;const d=JSON.parse(r);s.ci=d.ci??0;s.wn=d.wn??1;s.dn=d.dn??0;s.tc=d.tc??{};s.w=d.w??[];s.ch=d.ch??[];const t=new Date().toISOString().split('T')[0];if(d.lu&&d.lu!==t)s.tc={}}catch(e){}}
+const s={cv:'today',ci:0,wn:1,dn:0,cm:new Date(),tc:{},w:[],ch:[],
+settings:{
+appName:'BC BODY PROJECT',
+goalWeight:66,
+goalBF:8,
+currentPhase:1,
+startWeight:70.6,
+startBF:18.8
+},
+meals:JSON.parse(JSON.stringify(DEFAULT_MEAL))
+};
+function ss(){try{localStorage.setItem('bc',JSON.stringify({ci:s.ci,wn:s.wn,dn:s.dn,tc:s.tc,w:s.w,ch:s.ch,settings:s.settings,meals:s.meals,lu:new Date().toISOString().split('T')[0]}))}catch(e){}}
+function ls(){try{const r=localStorage.getItem('bc');if(!r)return;const d=JSON.parse(r);s.ci=d.ci??0;s.wn=d.wn??1;s.dn=d.dn??0;s.tc=d.tc??{};s.w=d.w??[];s.ch=d.ch??[];if(d.settings)s.settings={...s.settings,...d.settings};if(d.meals)s.meals=d.meals;const t=new Date().toISOString().split('T')[0];if(d.lu&&d.lu!==t)s.tc={}}catch(e){}}
+function updateHeader(){document.getElementById('app-title').innerHTML='💪 '+s.settings.appName;document.getElementById('app-sub').textContent=`目標:${s.settings.goalWeight}kg/${s.settings.goalBF}% - ${PHASE[s.settings.currentPhase].n}`}
 function sv(n,e){s.cv=n;document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.getElementById('v-'+n).classList.add('active');if(e)e.classList.add('active');r()}
 function tt(){return s.dn>0?'off':CYCLE[s.ci]}
 function rt(){const t=tt(),l=LBL[t],w=WT[s.wn],d=new Date();const ds=d.toLocaleDateString('ja-JP',{month:'long',day:'numeric',weekday:'short'});document.getElementById('hero').innerHTML=`<div class="hero ${l.c}"><div class="date">${ds}</div><div class="name">${l.e} ${l.n}</div><div class="week">${l.f}${t!=='off'?`<br><strong>Week ${s.wn}: ${w.n}</strong>`:''}</div></div>`;let m='';if(t==='off'){m+=`<div class="card"><h2>🧘 今日の柔軟性メニュー</h2><div class="section"><h3>朝モビリティ(10分)</h3>${rl(WU.slice(0,6),'m')}</div><div class="section"><h3>マスト5種目(夜)</h3>${rl(MUST5,'ms')}</div><div class="tip">💡 完全休養日:軽い散歩30分もおすすめ。役者業の蹴り上げ・開脚に直結する日。</div></div>`}else{const ex=EX[t]||EX['push'];const cd=CD[t];m+=`<div class="card"><h2>🔥 ウォームアップ(20分)</h2>${rl(WU,'wu')}</div><div class="card"><h2>💪 メイン種目(45分)</h2><div class="tip">Week ${s.wn}: ${w.d}<br>🎯 RIR 1-2で止める(あと1-2回できるところで終了)</div>${rl(ex,'mn')}</div><div class="card"><h2>🚴 有酸素(15-20分)</h2>${rl([{n:t==='legs'?'バイクLISS 15分':t==='pull'?'トレッドミル傾斜歩き 20分':'バイクLISS 15分',s:'心拍120-130',how:['心拍120-130維持','15-20分継続'],pt:['会話できる程度']}],'cd')}</div><div class="card"><h2>🧘 クールダウン(15分)</h2>${rl(cd,'co')}</div><div class="card"><h2>🥤 トレ後の補給</h2>${rl([{n:'ソイプロテイン 20g',s:'',how:['トレ後30分以内'],pt:['バナナと一緒に']},{n:'バナナ 1本',s:'',how:[''],pt:['糖質で吸収促進']},{n:'クレアチン 5g',s:'',how:['プロテインに混ぜる'],pt:['毎日必須']},{n:'水 コップ2杯以上',s:'',how:['多めに'],pt:['脱水予防']}],'su')}</div>${t==='legs'?`<div class="warn">⚠️ 左膝への配慮:膝とつま先の向きを揃える。足幅は腰幅固定。冷えてる日はウォームアップ延長。違和感あれば即中止。</div>`:''}<div class="card"><button class="btn" onclick="md()">🎉 今日のトレを完了する</button></div>`}document.getElementById('menu').innerHTML=m}
@@ -247,19 +283,33 @@ function cm(dl){s.cm.setMonth(s.cm.getMonth()+dl);rcal()}
 function scd(ds){const hs=s.ch.find(x=>x.date===ds);if(hs){const l=LBL[hs.type],w=WT[hs.week];sm(`<h2>${l.e} ${l.n}</h2><p><strong>日付:</strong> ${ds}</p><p><strong>種目:</strong> ${l.f}</p><p><strong>週:</strong> Week ${hs.week} - ${w.n}</p><p><strong>状態:</strong> ${hs.completed?'✅ 完了':'未完了'}</p><button class="btn sec" onclick="dh('${ds}')">この記録を削除</button><button class="btn" onclick="mcx()">閉じる</button>`)}else{sm(`<h2>${ds}</h2><p>この日の記録はありません。</p><button class="btn" onclick="mcx()">閉じる</button>`)}}
 function dh(ds){s.ch=s.ch.filter(x=>x.date!==ds);ss();mcx();rcal()}
 function rcp(){const ph=`<div style="font-size:12px;color:#7a8290;margin-bottom:6px">Week ${s.wn}: <strong style="color:#F39C12">${WT[s.wn].n}</strong></div>`;const cs=CYCLE.map((t,i)=>{const l=LBL[t],id=i<s.ci,nx=i===s.ci&&s.dn===0;return `<div style="display:flex;align-items:center;gap:6px;padding:6px;background:${nx?'#22282f':'transparent'};border-radius:6px;${nx?'border:1px solid #F39C12;':''}"><div style="width:22px;height:22px;border-radius:50%;background:${id?'#27AE60':'#4a5260'};display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:bold">${id?'✓':i+1}</div><div><div style="font-weight:600;font-size:13px">${l.e} ${l.n}</div><div style="font-size:10px;color:#7a8290">${l.f}</div></div></div>`}).join('');document.getElementById('cp').innerHTML=ph+`<div style="display:flex;flex-direction:column;gap:3px">${cs}</div>`}
-function rb(){const st=s.w.slice(-1)[0],sr=s.w[0];const cw=st?.weight??70.6,cb=st?.bodyFat??18.8,gw=66,gb=8;const swt=sr?.weight??70.6,wc=cw-swt,bc=cb-(sr?.bodyFat??18.8);document.getElementById('bs').innerHTML=`<div class="stat"><div class="stat-l">体重</div><div class="stat-v">${cw}<span class="stat-u"> kg</span></div>${s.w.length>1?`<div class="stat-c ${wc<0?'d':'u'}">${wc>0?'+':''}${wc.toFixed(1)}kg</div>`:''}</div><div class="stat"><div class="stat-l">体脂肪率</div><div class="stat-v">${cb}<span class="stat-u"> %</span></div>${s.w.length>1?`<div class="stat-c ${bc<0?'d':'u'}">${bc>0?'+':''}${bc.toFixed(1)}%</div>`:''}</div><div class="stat"><div class="stat-l">目標体重</div><div class="stat-v">${gw}<span class="stat-u"> kg</span></div><div class="stat-c">残り ${(cw-gw).toFixed(1)}kg</div></div><div class="stat"><div class="stat-l">目標体脂肪</div><div class="stat-v">${gb}<span class="stat-u"> %</span></div><div class="stat-c">残り ${(cb-gb).toFixed(1)}%</div></div>`;rwc();rgp(cw,cb)}
-function rwc(){const c=document.getElementById('wc');if(s.w.length<2){c.innerHTML='<div class="empty"><div class="ic">📊</div><div>記録が2つ以上あるとグラフが表示されます</div></div>';return}const ws=s.w,mn=Math.min(...ws.map(x=>x.weight))-1,mx=Math.max(...ws.map(x=>x.weight))+1,pad=30;const pts=ws.map((w,i)=>{const x=pad+(i/(ws.length-1))*(320-pad*2);const y=pad+((mx-w.weight)/(mx-mn))*(180-pad*2);return `${x},${y}`}).join(' ');const dots=ws.map((w,i)=>{const x=pad+(i/(ws.length-1))*(320-pad*2);const y=pad+((mx-w.weight)/(mx-mn))*(180-pad*2);return `<circle cx="${x}" cy="${y}" r="4" fill="#F39C12"/>`}).join('');c.innerHTML=`<svg width="100%" viewBox="0 0 320 180" style="max-width:320px"><line x1="${pad}" y1="${pad}" x2="${pad}" y2="${180-pad}" stroke="#2a2f36"/><line x1="${pad}" y1="${180-pad}" x2="${320-pad}" y2="${180-pad}" stroke="#2a2f36"/><line x1="${pad}" y1="${pad+((mx-66)/(mx-mn))*(180-pad*2)}" x2="${320-pad}" y2="${pad+((mx-66)/(mx-mn))*(180-pad*2)}" stroke="#27AE60" stroke-dasharray="3,3"/><text x="${320-pad-30}" y="${pad+((mx-66)/(mx-mn))*(180-pad*2)-4}" fill="#27AE60" font-size="10">目標</text><polyline points="${pts}" fill="none" stroke="#F39C12" stroke-width="2"/>${dots}<text x="${pad-25}" y="${pad+4}" fill="#7a8290" font-size="10">${mx.toFixed(1)}</text><text x="${pad-25}" y="${180-pad+3}" fill="#7a8290" font-size="10">${mn.toFixed(1)}</text></svg>`}
-function rgp(cw,cb){const sw=s.w[0]?.weight??70.6,gw=66,tt=sw-gw,al=sw-cw,pc=tt>0?Math.min(100,Math.max(0,(al/tt)*100)):0;document.getElementById('gp').innerHTML=`<div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;font-size:11px;color:#7a8290;margin-bottom:3px"><span>${sw}kg (スタート)</span><span>${gw}kg (ゴール)</span></div><div style="background:#22282f;height:10px;border-radius:5px;overflow:hidden"><div style="background:linear-gradient(90deg,#27AE60,#F39C12);height:100%;width:${pc}%;transition:width .5s"></div></div><div style="text-align:center;font-size:13px;margin-top:6px;color:#F39C12;font-weight:700">${pc.toFixed(0)}% 達成</div></div>`}
-function rmv(){document.getElementById('dn').innerHTML=`<div class="stat-grid"><div class="stat"><div class="stat-l">カロリー</div><div class="stat-v">2400<span class="stat-u"> kcal</span></div></div><div class="stat"><div class="stat-l">タンパク質</div><div class="stat-v">140<span class="stat-u"> g</span></div></div><div class="stat"><div class="stat-l">脂質</div><div class="stat-v">70<span class="stat-u"> g</span></div></div><div class="stat"><div class="stat-l">炭水化物</div><div class="stat-v">315<span class="stat-u"> g</span></div></div></div><div class="tip">Phase 1の目標値。基礎代謝1,603kcal × 活動係数1.6-1.75 = 消費2,560-2,800kcalに対して-200kcalの軽い赤字設定。</div>`;document.getElementById('mp').innerHTML=MEAL.map(m=>`<div class="meal"><div class="t">${m.t}</div><div class="n">${m.n}</div><div class="m">${m.k}kcal / タンパク質${m.p}g</div></div>`).join('');document.getElementById('sp').innerHTML=SUP.map(x=>`<div class="meal"><div class="t">${x.p}</div><div class="n">${x.n}</div><div class="m">${x.a}</div></div>`).join('')}
+function rb(){const st=s.w.slice(-1)[0],sr=s.w[0];const cw=st?.weight??s.settings.startWeight,cb=st?.bodyFat??s.settings.startBF,gw=s.settings.goalWeight,gb=s.settings.goalBF;const swt=sr?.weight??s.settings.startWeight,wc=cw-swt,bc=cb-(sr?.bodyFat??s.settings.startBF);document.getElementById('bs').innerHTML=`<div class="stat"><div class="stat-l">体重</div><div class="stat-v">${cw}<span class="stat-u"> kg</span></div>${s.w.length>1?`<div class="stat-c ${wc<0?'d':'u'}">${wc>0?'+':''}${wc.toFixed(1)}kg</div>`:''}</div><div class="stat"><div class="stat-l">体脂肪率</div><div class="stat-v">${cb}<span class="stat-u"> %</span></div>${s.w.length>1?`<div class="stat-c ${bc<0?'d':'u'}">${bc>0?'+':''}${bc.toFixed(1)}%</div>`:''}</div><div class="stat"><div class="stat-l">目標体重</div><div class="stat-v">${gw}<span class="stat-u"> kg</span></div><div class="stat-c">残り ${(cw-gw).toFixed(1)}kg</div></div><div class="stat"><div class="stat-l">目標体脂肪</div><div class="stat-v">${gb}<span class="stat-u"> %</span></div><div class="stat-c">残り ${(cb-gb).toFixed(1)}%</div></div>`;rwc();rgp(cw,cb)}
+function rwc(){const c=document.getElementById('wc');if(s.w.length<2){c.innerHTML='<div class="empty"><div class="ic">📊</div><div>記録が2つ以上あるとグラフが表示されます</div></div>';return}const ws=s.w,mn=Math.min(...ws.map(x=>x.weight))-1,mx=Math.max(...ws.map(x=>x.weight))+1,pad=30,gw=s.settings.goalWeight;const pts=ws.map((w,i)=>{const x=pad+(i/(ws.length-1))*(320-pad*2);const y=pad+((mx-w.weight)/(mx-mn))*(180-pad*2);return `${x},${y}`}).join(' ');const dots=ws.map((w,i)=>{const x=pad+(i/(ws.length-1))*(320-pad*2);const y=pad+((mx-w.weight)/(mx-mn))*(180-pad*2);return `<circle cx="${x}" cy="${y}" r="4" fill="#F39C12"/>`}).join('');const gy=pad+((mx-gw)/(mx-mn))*(180-pad*2);c.innerHTML=`<svg width="100%" viewBox="0 0 320 180" style="max-width:320px"><line x1="${pad}" y1="${pad}" x2="${pad}" y2="${180-pad}" stroke="#2a2f36"/><line x1="${pad}" y1="${180-pad}" x2="${320-pad}" y2="${180-pad}" stroke="#2a2f36"/>${gy>pad&&gy<180-pad?`<line x1="${pad}" y1="${gy}" x2="${320-pad}" y2="${gy}" stroke="#27AE60" stroke-dasharray="3,3"/><text x="${320-pad-30}" y="${gy-4}" fill="#27AE60" font-size="10">目標</text>`:''}<polyline points="${pts}" fill="none" stroke="#F39C12" stroke-width="2"/>${dots}<text x="${pad-25}" y="${pad+4}" fill="#7a8290" font-size="10">${mx.toFixed(1)}</text><text x="${pad-25}" y="${180-pad+3}" fill="#7a8290" font-size="10">${mn.toFixed(1)}</text></svg>`}
+function rgp(cw,cb){const sw=s.w[0]?.weight??s.settings.startWeight,gw=s.settings.goalWeight,tt=sw-gw,al=sw-cw,pc=tt>0?Math.min(100,Math.max(0,(al/tt)*100)):0;document.getElementById('gp').innerHTML=`<div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;font-size:11px;color:#7a8290;margin-bottom:3px"><span>${sw}kg (スタート)</span><span>${gw}kg (ゴール)</span></div><div style="background:#22282f;height:10px;border-radius:5px;overflow:hidden"><div style="background:linear-gradient(90deg,#27AE60,#F39C12);height:100%;width:${pc}%;transition:width .5s"></div></div><div style="text-align:center;font-size:13px;margin-top:6px;color:#F39C12;font-weight:700">${pc.toFixed(0)}% 達成</div></div>`}
+function rmv(){const p=PHASE[s.settings.currentPhase];document.getElementById('phase-badge').textContent=p.n;document.getElementById('dn').innerHTML=`<div class="stat-grid"><div class="stat"><div class="stat-l">カロリー</div><div class="stat-v">${p.kcal}<span class="stat-u"> kcal</span></div></div><div class="stat"><div class="stat-l">タンパク質</div><div class="stat-v">${p.p}<span class="stat-u"> g</span></div></div><div class="stat"><div class="stat-l">脂質</div><div class="stat-v">${p.f}<span class="stat-u"> g</span></div></div><div class="stat"><div class="stat-l">炭水化物</div><div class="stat-v">${p.c}<span class="stat-u"> g</span></div></div></div><div class="tip">${p.n}: ${p.d}</div>`;let totalK=0,totalP=0;s.meals.forEach(m=>{totalK+=m.k;totalP+=m.p});document.getElementById('mp').innerHTML=s.meals.map((m,i)=>`<div class="meal"><div class="info"><div class="t">${m.t}</div><div class="n">${m.n}</div><div class="m">${m.k}kcal / タンパク質${m.p}g</div></div><div class="actions"><button class="detail-btn" onclick="em(${i})">編集</button><button class="edit-btn" onclick="rm(${i})">削除</button></div></div>`).join('')+`<div style="margin-top:8px;padding:8px;background:#22282f;border-radius:8px;font-size:11px;color:#F39C12;font-weight:700;text-align:center">合計: ${totalK}kcal / P${totalP}g</div>`;document.getElementById('sp').innerHTML=SUP.map(x=>`<div class="meal"><div class="info"><div class="t">${x.p}</div><div class="n">${x.n}</div><div class="m">${x.a}</div></div></div>`).join('')}
+function em(i){const m=s.meals[i];sm(`<h2>🍽️ 食事を編集</h2><div class="fg"><label>時間帯</label><input type="text" id="e-t" value="${m.t}" placeholder="例: 朝食"></div><div class="fg"><label>内容</label><textarea id="e-n" rows="2">${m.n}</textarea></div><div class="fg"><label>カロリー (kcal)</label><input type="number" id="e-k" value="${m.k}" inputmode="numeric"></div><div class="fg"><label>タンパク質 (g)</label><input type="number" id="e-p" value="${m.p}" inputmode="numeric"></div><button class="btn" onclick="sem(${i})">保存</button><button class="btn sec" onclick="mcx()">キャンセル</button>`)}
+function sem(i){const t=document.getElementById('e-t').value,n=document.getElementById('e-n').value,k=parseFloat(document.getElementById('e-k').value),p=parseFloat(document.getElementById('e-p').value);if(!t||!n){alert('時間帯と内容は必須です');return}s.meals[i]={t,n,k:isNaN(k)?0:k,p:isNaN(p)?0:p};ss();mcx();r()}
+function am(){sm(`<h2>🍽️ 食事を追加</h2><div class="fg"><label>時間帯</label><input type="text" id="a-t" placeholder="例: 朝食・間食"></div><div class="fg"><label>内容</label><textarea id="a-n" rows="2" placeholder="食べたもの"></textarea></div><div class="fg"><label>カロリー (kcal)</label><input type="number" id="a-k" placeholder="例: 500" inputmode="numeric"></div><div class="fg"><label>タンパク質 (g)</label><input type="number" id="a-p" placeholder="例: 30" inputmode="numeric"></div><button class="btn" onclick="sam()">追加</button><button class="btn sec" onclick="mcx()">キャンセル</button>`)}
+function sam(){const t=document.getElementById('a-t').value,n=document.getElementById('a-n').value,k=parseFloat(document.getElementById('a-k').value),p=parseFloat(document.getElementById('a-p').value);if(!t||!n){alert('時間帯と内容は必須です');return}s.meals.push({t,n,k:isNaN(k)?0:k,p:isNaN(p)?0:p});ss();mcx();r()}
+function rm(i){sm(`<h2>⚠️ 削除確認</h2><p>「${s.meals[i].t}: ${s.meals[i].n}」を削除しますか?</p><button class="btn dan" onclick="dm(${i})">削除</button><button class="btn sec" onclick="mcx()">キャンセル</button>`)}
+function dm(i){s.meals.splice(i,1);ss();mcx();r()}
 function sm(h){document.getElementById('mm').innerHTML=h;document.getElementById('mbg').classList.add('show')}
 function mc(e){if(e.target.id==='mbg')mcx()}
 function mcx(){document.getElementById('mbg').classList.remove('show')}
 function mw(){const t=new Date().toISOString().split('T')[0];sm(`<h2>📊 今日の記録</h2><div class="fg"><label>日付</label><input type="date" id="wd" value="${t}"></div><div class="fg"><label>体重 (kg)</label><input type="number" step="0.1" id="ww" placeholder="70.6" inputmode="decimal"></div><div class="fg"><label>体脂肪率 (%)</label><input type="number" step="0.1" id="wb" placeholder="18.8" inputmode="decimal"></div><div class="fg"><label>骨格筋率 (%) - 任意</label><input type="number" step="0.1" id="wm" placeholder="42.7" inputmode="decimal"></div><button class="btn" onclick="sw()">保存</button><button class="btn sec" onclick="mcx()">キャンセル</button>`)}
 function sw(){const d=document.getElementById('wd').value,w=parseFloat(document.getElementById('ww').value),b=parseFloat(document.getElementById('wb').value),m=parseFloat(document.getElementById('wm').value);if(!d||isNaN(w)){alert('日付と体重は必須です');return}s.w=s.w.filter(x=>x.date!==d);s.w.push({date:d,weight:w,bodyFat:isNaN(b)?null:b,muscleMass:isNaN(m)?null:m});s.w.sort((a,b)=>a.date.localeCompare(b.date));ss();mcx();r()}
+function ms(){const st=s.settings;let phaseHTML='';for(let i=1;i<=3;i++){const p=PHASE[i];phaseHTML+=`<div class="phase-opt ${st.currentPhase===i?'active':''}" onclick="selectPhase(${i})"><div class="p-name">${p.n}</div><div class="p-kcal">${p.kcal}kcal</div><div class="p-detail">P${p.p}g / ${p.d}</div></div>`}
+sm(`<h2>⚙️ 設定</h2><div class="fg"><label>アプリ名</label><input type="text" id="s-name" value="${st.appName}" maxlength="30"></div><h3 style="color:#F39C12;margin:12px 0 6px;font-size:13px">🎯 目標</h3><div class="fg"><label>目標体重 (kg)</label><input type="number" step="0.1" id="s-gw" value="${st.goalWeight}" inputmode="decimal"></div><div class="fg"><label>目標体脂肪率 (%)</label><input type="number" step="0.1" id="s-gb" value="${st.goalBF}" inputmode="decimal"></div><h3 style="color:#F39C12;margin:12px 0 6px;font-size:13px">📊 スタート地点</h3><div class="fg"><label>開始時体重 (kg)</label><input type="number" step="0.1" id="s-sw" value="${st.startWeight}" inputmode="decimal"><div class="help">進捗計算の基準になります</div></div><div class="fg"><label>開始時体脂肪率 (%)</label><input type="number" step="0.1" id="s-sb" value="${st.startBF}" inputmode="decimal"></div><h3 style="color:#F39C12;margin:12px 0 6px;font-size:13px">🔥 現在のPhase</h3><div class="phase-selector">${phaseHTML}</div><div class="tip">Phase切替で食事目標カロリー・マクロが変わります</div><button class="btn suc" onclick="saveSettings()">💾 設定を保存</button><button class="btn sec" onclick="resetMeals()">🍽️ 食事メニューを初期値に戻す</button><button class="btn dan" onclick="resetAllData()">⚠️ 全データ初期化</button><button class="btn sec" onclick="mcx()">閉じる</button>`)}
+function selectPhase(p){s.settings.currentPhase=p;document.querySelectorAll('.phase-opt').forEach((el,i)=>{if(i+1===p)el.classList.add('active');else el.classList.remove('active')})}
+function saveSettings(){const name=document.getElementById('s-name').value.trim();const gw=parseFloat(document.getElementById('s-gw').value);const gb=parseFloat(document.getElementById('s-gb').value);const sw=parseFloat(document.getElementById('s-sw').value);const sb=parseFloat(document.getElementById('s-sb').value);if(!name){alert('アプリ名は必須です');return}if(isNaN(gw)||isNaN(gb)||isNaN(sw)||isNaN(sb)){alert('数値を入力してください');return}s.settings.appName=name;s.settings.goalWeight=gw;s.settings.goalBF=gb;s.settings.startWeight=sw;s.settings.startBF=sb;ss();updateHeader();mcx();r();sm(`<h2>✅ 保存しました</h2><p>設定が反映されました。</p><button class="btn" onclick="mcx()">OK</button>`)}
+function resetMeals(){sm(`<h2>⚠️ 食事メニュー初期化</h2><p>食事メニューをデフォルトに戻しますか?(現在のカスタマイズは失われます)</p><button class="btn dan" onclick="doResetMeals()">初期化</button><button class="btn sec" onclick="mcx()">キャンセル</button>`)}
+function doResetMeals(){s.meals=JSON.parse(JSON.stringify(DEFAULT_MEAL));ss();mcx();r()}
+function resetAllData(){sm(`<h2>⚠️⚠️ 全データ初期化</h2><p style="color:#E74C3C">全てのデータ(体重記録・トレ履歴・設定・食事メニュー)を削除します。<br><br>本当に実行しますか?</p><button class="btn dan" onclick="doResetAll()">全て削除</button><button class="btn sec" onclick="mcx()">キャンセル</button>`)}
+function doResetAll(){localStorage.removeItem('bc');location.reload()}
 function el(t){const l=LBL[t],ex=EX[t];sm(`<h2>${l.e} ${l.n} 種目一覧</h2>${ex.map(x=>`<div class="detail-box"><div style="font-weight:700;margin-bottom:3px">${x.n}</div><div style="font-size:10px;color:#F39C12;margin-bottom:3px">🎯 ${x.t}</div><div style="font-size:12px;color:#B3D4F0;margin-bottom:6px">${x.s}</div>${x.how?`<div style="font-size:11px;line-height:1.5;color:#e8e8e8"><strong style="color:#F39C12">📋 やり方:</strong><ol style="padding-left:16px;margin-top:3px">${x.how.map(y=>`<li>${y}</li>`).join('')}</ol></div>`:''}${x.pt?`<div style="font-size:11px;line-height:1.5;color:#e8e8e8;margin-top:6px"><strong style="color:#27AE60">✅ ポイント:</strong><ul style="padding-left:16px;margin-top:3px">${x.pt.map(y=>`<li>${y}</li>`).join('')}</ul></div>`:''}${x.ng?`<div style="font-size:11px;line-height:1.5;color:#e8e8e8;margin-top:6px"><strong style="color:#E74C3C">❌ NG:</strong><ul style="padding-left:16px;margin-top:3px">${x.ng.map(y=>`<li>${y}</li>`).join('')}</ul></div>`:''}</div>`).join('')}<button class="btn" onclick="mcx()">閉じる</button>`)}
 function sl(){sm(`<h2>🧘 柔軟性メニュー</h2><h3>🌅 ウォームアップ(動的)</h3>${WU.map(x=>`<div class="detail-box"><div style="font-weight:700">${x.n}</div><div style="font-size:12px;color:#B3D4F0">${x.s}</div>${x.how?`<div style="font-size:11px;line-height:1.5;margin-top:4px"><strong style="color:#F39C12">やり方:</strong><ol style="padding-left:16px">${x.how.map(y=>`<li>${y}</li>`).join('')}</ol></div>`:''}${x.pt?`<div style="font-size:11px;line-height:1.5;margin-top:4px"><strong style="color:#27AE60">ポイント:</strong><ul style="padding-left:16px">${x.pt.map(y=>`<li>${y}</li>`).join('')}</ul></div>`:''}</div>`).join('')}<h3>🌙 マスト5種目(毎日)</h3>${MUST5.map(x=>`<div class="detail-box"><div style="font-weight:700">${x.n}</div><div style="font-size:12px;color:#B3D4F0">${x.s}</div>${x.how?`<div style="font-size:11px;line-height:1.5;margin-top:4px"><strong style="color:#F39C12">やり方:</strong><ol style="padding-left:16px">${x.how.map(y=>`<li>${y}</li>`).join('')}</ol></div>`:''}${x.pt?`<div style="font-size:11px;line-height:1.5;margin-top:4px"><strong style="color:#27AE60">ポイント:</strong><ul style="padding-left:16px">${x.pt.map(y=>`<li>${y}</li>`).join('')}</ul></div>`:''}</div>`).join('')}<button class="btn" onclick="mcx()">閉じる</button>`)}
-function r(){if(s.cv==='today')rt();else if(s.cv==='cal')rcal();else if(s.cv==='body')rb();else if(s.cv==='menu')rmv()}
-function init(){ls();if(s.w.length===0){s.w.push({date:'2026-05-11',weight:70.6,bodyFat:18.8,muscleMass:42.7});ss()}r()}
+function r(){updateHeader();if(s.cv==='today')rt();else if(s.cv==='cal')rcal();else if(s.cv==='body')rb();else if(s.cv==='menu')rmv()}
+function init(){ls();if(s.w.length===0){s.w.push({date:new Date().toISOString().split('T')[0],weight:s.settings.startWeight,bodyFat:s.settings.startBF,muscleMass:42.7});ss()}r()}
 init();
 </script>
 </body>
