@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="BC Body">
+<title>BC Body Project</title>
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%231A5276'/%3E%3Ctext x='50' y='62' font-size='36' text-anchor='middle' fill='white' font-weight='bold'%3EBC%3C/text%3E%3C/svg%3E">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Yu Gothic',sans-serif;background:#0f1419;color:#e8e8e8;padding-bottom:80px;min-height:100vh;-webkit-user-select:none;user-select:none}
+.container{max-width:500px;margin:0 auto}
+.header{background:linear-gradient(135deg,#1A5276,#2874A6);padding:16px;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.header h1{font-size:18px;font-weight:700;color:#fff;letter-spacing:1px}
+.header .sub{font-size:11px;color:#B3D4F0;margin-top:2px}
+.tabbar{position:fixed;bottom:0;left:0;right:0;background:#1a1f26;border-top:1px solid #2a2f36;display:flex;padding:8px 0;z-index:1000;padding-bottom:max(8px,env(safe-area-inset-bottom))}
+.tab{flex:1;text-align:center;padding:6px 4px;color:#7a8290;cursor:pointer;font-size:10px}
+.tab.active{color:#F39C12}
+.tab .icon{font-size:20px;display:block;margin-bottom:2px}
+.content{padding:14px}
+.view{display:none}
+.view.active{display:block}
+.card{background:#1a1f26;border-radius:14px;padding:14px;margin-bottom:12px;border:1px solid #2a2f36}
+.card h2{font-size:15px;margin-bottom:10px;color:#F39C12;display:flex;align-items:center;gap:6px}
+.hero{border-radius:18px;padding:18px;margin-bottom:14px;color:#fff;box-shadow:0 4px 12px rgba(0,0,0,.3)}
+.hero.push{background:linear-gradient(135deg,#C0392B,#E74C3C)}
+.hero.pull{background:linear-gradient(135deg,#1F618D,#2874A6)}
+.hero.legs{background:linear-gradient(135deg,#B9770E,#D68910)}
+.hero.cond{background:linear-gradient(135deg,#7D3C98,#9B59B6)}
+.hero.off{background:linear-gradient(135deg,#566573,#7F8C8D)}
+.hero .date{font-size:11px;opacity:.9;letter-spacing:1px}
+.hero .name{font-size:28px;font-weight:800;margin:4px 0;letter-spacing:1px}
+.hero .week{font-size:13px;opacity:.9}
+.section{margin-bottom:14px}
+.section h3{font-size:12px;color:#F39C12;margin-bottom:6px;text-transform:uppercase;letter-spacing:1px;font-weight:700}
+.item{background:#22282f;border-radius:10px;padding:10px;margin-bottom:6px;display:flex;align-items:center;gap:10px}
+.item .check{width:22px;height:22px;border-radius:50%;border:2px solid #4a5260;flex-shrink:0;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.item .check.on{background:#27AE60;border-color:#27AE60}
+.item .check.on::after{content:'✓';color:#fff;font-weight:bold;font-size:12px}
+.item .info{flex:1;min-width:0}
+.item .n{font-size:13px;font-weight:600}
+.item .d{font-size:11px;color:#7a8290;margin-top:2px}
+.item .detail-btn{background:#F39C12;color:#fff;border:none;padding:4px 8px;border-radius:6px;font-size:10px;cursor:pointer;flex-shrink:0}
+.item.done .n{text-decoration:line-through;opacity:.5}
+.btn{background:#F39C12;color:#fff;border:none;padding:11px 16px;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;width:100%;margin-top:6px}
+.btn:active{transform:scale(.98)}
+.btn.sec{background:#34495E}
+.btn.dan{background:#C0392B}
+.btn-row{display:flex;gap:6px}
+.btn-row .btn{margin-top:0}
+.tip{background:rgba(243,156,18,.1);border-left:3px solid #F39C12;padding:8px 10px;border-radius:6px;font-size:11px;color:#F0D896;margin-top:8px;line-height:1.5}
+.warn{background:rgba(231,76,60,.1);border-left:3px solid #E74C3C;padding:8px 10px;border-radius:6px;font-size:11px;color:#F5B7B1;margin-top:8px;line-height:1.5}
+.cal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.cal-title{font-size:16px;font-weight:700}
+.cal-nav{background:#22282f;border:none;color:#fff;width:32px;height:32px;border-radius:50%;font-size:16px}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.cal-dh{text-align:center;font-size:10px;color:#7a8290;padding:3px;font-weight:600}
+.cal-day{aspect-ratio:1;background:#22282f;border-radius:6px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:12px;position:relative;border:2px solid transparent}
+.cal-day.other{opacity:.3}
+.cal-day.today{border-color:#F39C12}
+.cal-day .type{font-size:7px;margin-top:1px;padding:1px 3px;border-radius:3px;font-weight:700}
+.cal-day .type.push{background:#C0392B;color:#fff}
+.cal-day .type.pull{background:#1F618D;color:#fff}
+.cal-day .type.legs{background:#B9770E;color:#fff}
+.cal-day .type.cond{background:#7D3C98;color:#fff}
+.cal-day .dot{position:absolute;top:3px;right:3px;width:5px;height:5px;background:#27AE60;border-radius:50%}
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.stat{background:#1a1f26;border-radius:10px;padding:12px;border:1px solid #2a2f36}
+.stat-l{font-size:10px;color:#7a8290;letter-spacing:1px;text-transform:uppercase}
+.stat-v{font-size:22px;font-weight:700;margin-top:2px;color:#F39C12}
+.stat-u{font-size:11px;color:#7a8290}
+.stat-c{font-size:10px;margin-top:2px}
+.stat-c.d{color:#27AE60}
+.stat-c.u{color:#E74C3C}
+.fg{margin-bottom:10px}
+.fg label{display:block;font-size:11px;color:#7a8290;margin-bottom:3px;letter-spacing:1px;text-transform:uppercase}
+.fg input{width:100%;background:#22282f;border:1px solid #2a2f36;color:#fff;padding:9px 10px;border-radius:8px;font-size:13px}
+.fg input:focus{outline:none;border-color:#F39C12}
+.meal{background:#22282f;border-radius:10px;padding:10px;margin-bottom:6px}
+.meal .t{font-size:10px;color:#F39C12;font-weight:700;letter-spacing:1px}
+.meal .n{font-size:13px;margin-top:2px}
+.meal .m{font-size:10px;color:#7a8290;margin-top:2px}
+.mbg{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.7);z-index:2000;align-items:flex-start;justify-content:center;padding:20px;overflow-y:auto}
+.mbg.show{display:flex}
+.modal{background:#1a1f26;border-radius:14px;padding:18px;width:100%;max-width:400px;border:1px solid #2a2f36;margin-top:40px;margin-bottom:40px}
+.modal h2{color:#F39C12;margin-bottom:10px;font-size:16px}
+.modal h3{color:#B3D4F0;margin:12px 0 6px;font-size:13px}
+.modal p{font-size:12px;line-height:1.6;color:#e8e8e8;margin-bottom:6px}
+.modal ol,.modal ul{padding-left:18px;font-size:12px;line-height:1.7;color:#e8e8e8}
+.modal ol li,.modal ul li{margin-bottom:3px}
+.detail-box{background:#22282f;padding:10px;border-radius:8px;margin:6px 0}
+.detail-box .lbl{font-size:10px;color:#F39C12;letter-spacing:1px;font-weight:700;margin-bottom:3px}
+.empty{text-align:center;padding:30px 20px;color:#7a8290}
+.empty .ic{font-size:40px;margin-bottom:8px;opacity:.5}
+.chart{background:#1a1f26;border-radius:10px;padding:14px;margin-bottom:10px;border:1px solid #2a2f36}
+.section-h{font-size:12px;color:#F39C12;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin:16px 0 6px;padding-bottom:3px;border-bottom:1px solid #2a2f36}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="header"><h1>💪 BC BODY PROJECT</h1><div class="sub">目標:66kg/8% - 週4ジム × 4週ローテ</div></div>
+<div class="content">
+<div class="view active" id="v-today"><div id="hero"></div><div id="menu"></div></div>
+<div class="view" id="v-cal">
+<div class="card"><div class="cal-head"><button class="cal-nav" onclick="cm(-1)">‹</button><div class="cal-title" id="ct"></div><button class="cal-nav" onclick="cm(1)">›</button></div><div class="cal-grid" id="cg"></div></div>
+<div class="card"><h2>📊 進捗</h2><div id="cp"></div></div>
+<div class="card"><h2>⚙️ トレ管理</h2><button class="btn" onclick="md()">今日のトレを完了 → 次へ進める</button><button class="btn sec" onclick="mr()">サイクルリセット</button></div>
+</div>
+<div class="view" id="v-body">
+<div class="card"><h2>📈 現状</h2><div class="stat-grid" id="bs"></div><button class="btn" onclick="mw()">今日の記録を追加</button></div>
+<div class="card"><h2>📉 体重推移</h2><div class="chart" id="wc"></div></div>
+<div class="card"><h2>🎯 目標までの距離</h2><div id="gp"></div></div>
+</div>
+<div class="view" id="v-menu">
+<div class="card"><h2>🍽️ 今日の食事目標</h2><div id="dn"></div></div>
+<div class="card"><h2>📋 食事プラン</h2><div id="mp"></div></div>
+<div class="section-h">💊 サプリメント</div><div class="card"><div id="sp"></div></div>
+<div class="section-h">📚 メニュー詳細</div>
+<div class="btn-row"><button class="btn" onclick="el('push')">Push</button><button class="btn" onclick="el('pull')">Pull</button></div>
+<div class="btn-row" style="margin-top:6px"><button class="btn" onclick="el('legs')">Legs+Core</button><button class="btn" onclick="el('cond')">Cond</button></div>
+<button class="btn sec" onclick="sl()" style="margin-top:6px">柔軟性メニュー全部</button>
+</div>
+</div>
+<div class="tabbar">
+<div class="tab active" onclick="sv('today',this)"><span class="icon">🏠</span>今日</div>
+<div class="tab" onclick="sv('cal',this)"><span class="icon">📅</span>カレンダー</div>
+<div class="tab" onclick="sv('body',this)"><span class="icon">📊</span>体組成</div>
+<div class="tab" onclick="sv('menu',this)"><span class="icon">📖</span>メニュー</div>
+</div>
+</div>
+<div class="mbg" id="mbg" onclick="mc(event)"><div class="modal" id="mm" onclick="event.stopPropagation()"></div></div>
+<script>
+const CYCLE=['push','pull','legs','cond'];
+const LBL={push:{n:'PUSH',f:'胸・肩・三頭',c:'push',e:'💪'},pull:{n:'PULL',f:'背中・二頭',c:'pull',e:'🎯'},legs:{n:'LEGS+CORE',f:'脚・体幹',c:'legs',e:'🦵'},cond:{n:'CONDITIONING',f:'心肺・HIIT',c:'cond',e:'🔥'},off:{n:'OFF',f:'休養・柔軟性',c:'off',e:'🧘'}};
+const WT={1:{n:'ハイパートロフィー',d:'筋肥大・8-10回・90秒休'},2:{n:'テンポ&コントロール',d:'コントロール・8回・4-1-1-0テンポ'},3:{n:'メタボリック',d:'代謝促進・12-15回・45秒休'},4:{n:'ストレングス',d:'高重量・5-6回・120秒休'}};
+const EX={
+push:[
+{n:'チェストプレス基本',s:'4×8-10',t:'大胸筋',how:['マシンに座り、軽い重量に設定','座面高さ:ハンドルが胸の真ん中','背もたれにしっかり寄りかかる(お尻・背中密着)','両足は床にしっかりつける','両手でハンドルを握る(手首曲げない)','息を吸いながら2秒で前に押し出す','肘は伸ばし切らない(少し曲げて止める)','息を吐きながら3秒でゆっくり戻す'],pt:['肩甲骨を寄せて胸を張る','腰を背もたれに密着','ハンドルは胸の真ん中に向かう','肘の高さは肩より少し下'],ng:['反動でガシャンと押す','肩がすくむ','腰を反らせる','肘を完全に伸ばし切る']},
+{n:'ショルダープレス',s:'4×8-10',t:'三角筋前・中',how:['マシンに座り、軽めの重量に設定','座面:ハンドルが耳の少し下','背もたれ密着、腰も密着','両足は床、腹に力','両手でハンドルを握る','息を吸いながら2秒で真上に押し上げる(耳の横を通るイメージ)','息を吐きながら3秒で下ろす','耳の高さまで来たら止める(それ以上下げない)'],pt:['ハンドルは耳の少し前に押し上げる','腰は反らさず、腹に力','肘は完全に伸ばし切らない','下ろす時、耳より下に行かない'],ng:['腰を大きく反らせて押し上げる','ハンドルを下ろしすぎる','肩がすくむ','反動を使う']},
+{n:'チェストプレス下部特化',s:'2×12-15',t:'大胸筋下部',how:['シート位置を1段階高くする','重量はメイン種目より軽め(70%)','ハンドルが胸の下縁の高さ','通常のチェストプレスと同じ動作','押す軌道を「斜め下から斜め上」に意識','押し終わりで「胸の下を絞る」意識','下ろす時、胸の下にストレッチ感'],pt:['同じマシンでもシートの高さで効く部位が変わる','押す軌道が命','胸下部V字ラインに直結'],ng:['シート高さ間違い','重量を上げすぎ','軌道が水平になる']},
+{n:'ディップス',s:'3×限界',t:'胸下部・三頭',how:['ディップスバーを両手で握る','体を持ち上げて腕を伸ばす','ゆっくり下ろす(2秒)','肩が肘より少し下まで','胸に効かせる時は前傾姿勢','三頭に効かせる時は直立','ゆっくり押し上げる(2秒)','これを限界まで'],pt:['前傾で胸、直立で三頭に効かせる','肩がすくまないよう下げる','ゆっくりコントロール'],ng:['勢いで下ろす','下げすぎ(肩傷める)','反動使う']},
+{n:'ショルダープレス片手',s:'3×10',t:'三角筋',how:['マシンに片手で座る','反対の手はマシンや膝の上','体をやや斜めにする','片手で押し上げる','ゆっくり戻す','10回×3セット×左右'],pt:['体幹も同時に鍛える','左右差を確認','片側集中で意識しやすい'],ng:['体がねじれる','反対の肩がすくむ','重すぎる重量']},
+{n:'プッシュアッププラス',s:'3×10',t:'前鋸筋',how:['プッシュアップ姿勢を作る','両手は肩幅、足は揃える','普通の腕立てを1回','肘を完全に伸ばし切る','その位置から「肩甲骨を前に押し出す」','体が1-2cm持ち上がる感覚','肩甲骨が背中で離れる感覚','ゆっくり戻る'],pt:['プッシュアップの上半分にフォーカス','肩甲骨の動きが命','前鋸筋(胸脇のギザギザ)に効く'],ng:['ただの腕立てになる','肩甲骨動かない','反動使う']},
+{n:'チェストドロップセット',s:'1×10→10→10',t:'大胸筋',how:['最初は通常より少し軽い重量で10回','終わったらすぐ重量を落とす(20-30%)','休まず10回','さらに重量落として10回','合計30回連続で追い込み'],pt:['重量を段階的に下げて追い込み','セット間の休憩なし','最後の10回は限界OK'],ng:['休憩を挟む','重量落とすの遅い','フォーム崩れる']},
+{n:'アブベンチツイスト',s:'3×12/側',t:'腹斜筋',how:['ベンチ傾斜を軽め(20度)に設定','足首を上のパッドに固定','仰向けに寝る、膝90度','両手は頭の横','息を吐きながら上体を起こしつつ、右肘を左膝に近づけるようにねじる','ゆねじる動作を丁寧に','次は左肘を右膝','左右交互に各12回'],pt:['ねじる動作を丁寧に','お腹を縮める感覚','反動使わない','Vライン作りに直結'],ng:['反動で起き上がる','首だけひねる','呼吸止める']},
+{n:'サイドプランク',s:'3×30秒/側',t:'腹斜筋・体幹',how:['マットに横向きに寝る','下の肘を肩の真下について支える','足は揃えるか、上の足を前にずらす','お尻を浮かせて、頭→お尻→かかとが一直線','30秒キープ','呼吸止めない','反対側も'],pt:['お尻が落ちない','お尻が上がりすぎない','頭からかかとまで一直線','辛い時は膝ついてOK'],ng:['お尻が下がる','お尻が上がる','呼吸止める']}
+],
+pull:[
+{n:'ラットプルダウン ワイド',s:'4×8-10',t:'広背筋',how:['マシンに座る前にバー位置を確認','太ももをパッドで固定(膝90度)','立ち上がってバーを握る','握る位置は肩幅より拳1-2個分外側','着座、胸を張り、上半身を15度後ろに倒す','最初に肩を下げる','息を吐きながら2秒でバーを鎖骨の上まで引き下ろす','引きながら肘を腰の方向に向ける','引き終わりで肩甲骨を寄せて1秒キープ','息を吸いながら3秒でゆっくり戻す'],pt:['腕じゃなく「肘」で引く','バーは「鎖骨の上」に下ろす(後頭部NG)','引く時に肩甲骨を寄せて下げる','上半身は固定(反動使わない)','リストストラップ推奨'],ng:['反動で体を揺らして引く','バーを後頭部に引く(肩関節傷める)','腕の力で引く','肩がすくんでバーが上がる']},
+{n:'ラットプルダウン ナロー逆手',s:'4×10-12',t:'広背筋・二頭',how:['バーを逆手で握る(手のひらが自分側)','握る位置は肩幅以内(拳2個分)','着座して胸を張る','上半身を15度後ろに倒す','肩を下げる','バーをみぞおちに引き下ろす','引き終わりで肘を脇腹に押し付けるイメージ','肩甲骨を寄せながら1秒キープ','ゆっくり戻す','10-12回×4セット'],pt:['ワイドより重量は軽めから','二頭筋にも効くので両方意識','背中の厚みを作る種目'],ng:['腕だけで引く','肘が広がる','反動使う']},
+{n:'ワンハンド ラットプル',s:'3×10/側',t:'広背筋左右差',how:['通常のワイドバーをそのまま使う','片手だけでバーの端を握る','もう片方の手は膝の上 or マシンのパッドに添える','体を少し斜めにする(引く側の肩が前に出るように)','片手でバーを鎖骨側に引く','引きながら肘を腰に向ける','肩甲骨を寄せて1秒キープ','ゆっくり戻す','10回×3セット×左右'],pt:['重量は通常の60-70%に下げる','体幹も鍛えられる','左右差矯正に◎','体がねじれないように'],ng:['体がねじれる','反動使う','肩がすくむ']},
+{n:'ラットプルダウン 21レップス',s:'1×21',t:'広背筋',how:['重量を通常の60-70%に下げる','下半分7回(胸からバーが鎖骨に来るまで)','休まずに上半分7回(バーが上から胸の高さまで)','休まずにフル可動域7回(通常動作)','合計21回連続で止めない'],pt:['軽い重量でOK(重すぎると持たない)','各7回は意識切らさない','最後のフル7回は限界OK','追い込み・代謝刺激'],ng:['重すぎる','途中で休む','可動域が同じ']},
+{n:'タオルフェイスプル',s:'3×15',t:'僧帽筋中下・後肩',how:['頑丈なタオルを用意(バスタオル or フェイスタオル2枚結ぶ)','ケーブルマシンがあればタオルを通す','両手でタオルの両端を握って構える','肘を高く保つ(肩より少し下)','タオルを「顔の方向」に引く','肩甲骨が寄り、僧帽筋中下部が収縮','ゆっくり戻す','15回×3セット'],pt:['肘の高さをキープ(下がるとNG)','顔の高さに引く','肩甲骨を寄せる意識','姿勢改善に効く'],ng:['肘が下がる','引く位置が低い','肩がすくむ']},
+{n:'アブベンチツイスト',s:'3×12/側',t:'腹斜筋',how:['ベンチ傾斜を軽め(20度)','足首を上のパッドに固定','仰向け、膝90度','両手は頭の横','息を吐きながら上体を起こしつつねじる','左右交互に各12回'],pt:['ねじる動作を丁寧に','お腹を縮める感覚'],ng:['反動使う','首痛める']},
+{n:'サイドプランク',s:'3×30秒/側',t:'腹斜筋・体幹',how:['横向きに寝る','下の肘を肩の真下','お尻を浮かせて一直線','30秒キープ','反対側も'],pt:['お尻が落ちない','一直線キープ'],ng:['お尻下がる','呼吸止める']}
+],
+legs:[
+{n:'レッグプレス 上目',s:'4×12-15',t:'大腿四頭筋・お尻',how:['マシンに座り、背もたれに密着','足をプレートの少し上目に置く','足幅は腰幅','⚠️膝とつま先の向きを揃える','息を吸いながらゆっくり下ろす','膝が胸に近づくまで下ろす','息を吐きながら押し上げる','膝は完全に伸ばし切らない','12-15回×4セット'],pt:['⚠️膝とつま先の向きを絶対揃える','足幅は腰幅で固定','伸ばし切らない','冷えてる日はウォームアップ延長'],ng:['膝が内側に入る','足位置が広すぎる','伸ばし切って膝関節に負担','違和感を無視']},
+{n:'レッグプレス 腰幅',s:'3×15',t:'大腿四頭筋',how:['足位置を腰幅に','足の位置固定','12-15回×3セット','⚠️膝とつま先の向きを揃える'],pt:['太もも前面に集中','足の位置ブレない'],ng:['膝が内側に入る','反動使う']},
+{n:'レッグプレス 片足',s:'3×12/側',t:'左右差矯正',how:['軽めの重量から','片足だけプレートに乗せる','反対の足は横に','片足で押し上げる','ゆっくり下ろす','12回×3セット×左右','⚠️膝の向きに特に注意'],pt:['軽い重量から','左右の感覚差を確認','慎重に'],ng:['重量重すぎ','膝が内側に入る','反動使う']},
+{n:'グルートブリッジ',s:'3×20',t:'お尻・ハム',how:['仰向けに寝る','膝を曲げて足を床につける','腕は体の横','お尻を強く締めながら持ち上げる','肩から膝まで一直線','1秒キープ','ゆっくり下ろす','20回×3セット'],pt:['お尻を強く締める','腰で持ち上げない(お尻で)','一直線をキープ'],ng:['腰で持ち上げる','お尻の締めが弱い','反動使う']},
+{n:'シングルレッグデッドリフト',s:'3×10/側',t:'ハム・お尻・体幹',how:['片足立ちになる','軽いダンベル or 自重','上体をゆっくり前に倒しながら反対の足を後ろに伸ばす','背中を真っ直ぐ','ハムに張りを感じるところまで','ゆっくり戻す','10回×3セット×左右'],pt:['バランス重視','軽め or 自重から','背中を真っ直ぐ','ハムのストレッチ感'],ng:['背中丸まる','バランス崩す','速すぎる']},
+{n:'ハンギングレッグレイズ',s:'3×10-12',t:'腹直筋下部',how:['懸垂バーにぶら下がる','両足を揃える','息を吐きながら足を持ち上げる','膝を曲げて胸に近づける','or 足を伸ばしたまま90度まで上げる','ゆっくり下ろす','10-12回×3セット'],pt:['反動使わない','腹筋下部を意識','下ろすときもコントロール'],ng:['反動で振る','途中で止める','呼吸止める']},
+{n:'アブクランチ',s:'4×15-20',t:'腹直筋',how:['ベンチに仰向け','足首を固定','両手は胸の前','息を吐きながら2秒で上体を丸めるように起こす','肩甲骨が浮く程度でOK','息を吸いながら3秒で戻す','完全に下ろさず、お腹に力を残す','15-20回×4セット'],pt:['「起き上がる」のではなく「お腹を縮める」','呼吸を止めない','腰がベンチから離れないように'],ng:['反動で起きる','頭を手で引っ張る','呼吸止める']},
+{n:'アブベンチツイスト',s:'3×12/側',t:'腹斜筋',how:['クランチと同じ姿勢','両手は頭の横','息を吐きながら上体を起こしつつねじる','左右交互に各12回'],pt:['ねじる動作重視','丁寧に'],ng:['反動使う','首痛める']},
+{n:'プランク',s:'3×60秒',t:'体幹',how:['うつ伏せ','肘を肩の真下について支える','足はつま先立ち','頭からかかとまで一直線','60秒キープ','呼吸止めない'],pt:['一直線キープ','お尻上がらない','お尻下がらない'],ng:['お尻上がる','お尻下がる','呼吸止める']}
+],
+cond:[
+{n:'バイクHIIT',s:'30秒全力/60秒回復 ×8',t:'心肺・脂肪燃焼',how:['バイクに乗る','30秒全力でこぐ(息が上がるくらい)','60秒ゆっくり回復','これを8セット','合計12分','⚠️膝に優しいバイク中心'],pt:['全力の30秒は本気で','回復60秒でしっかり休む','8セット完遂を目標に'],ng:['30秒手を抜く','回復が短い','膝に無理させる']},
+{n:'トレッドミル傾斜歩き',s:'15分',t:'有酸素',how:['傾斜7-10%に設定','速度5-6km/h','15分歩き続ける','心拍120-140維持','会話できるが少し息弾む程度'],pt:['走らずに歩く','傾斜で負荷','足裏全体で着地'],ng:['走る','傾斜低すぎる','前のめり']},
+{n:'アブスーパーセット',s:'3×15+15',t:'腹直筋・腹斜筋',how:['クランチ15回','休まずツイスト15回','これで1セット','60秒休憩','3セット'],pt:['休まず連続','各種目丁寧に'],ng:['途中で休む','速すぎる']},
+{n:'サイドプランク',s:'3×45秒/側',t:'腹斜筋',how:['横向きに寝る','下の肘を肩の真下','お尻を浮かせて一直線','45秒キープ','反対側も','長めキープ'],pt:['一直線キープ','長めに耐える'],ng:['お尻下がる']},
+{n:'リバースクランチ',s:'2×15',t:'腹直筋下部',how:['仰向けに寝る','膝を曲げて足を浮かせる','骨盤を巻き上げるようにお尻を持ち上げる','ゆっくり戻す','15回×2セット'],pt:['骨盤を巻き上げる意識','腹筋下部を意識'],ng:['反動使う','足で振る']},
+{n:'プランク',s:'3×60秒',t:'体幹',how:['うつ伏せ','肘を肩の真下','一直線キープ','60秒'],pt:['一直線'],ng:['お尻上下']}
+]
+};
+const WU=[
+{n:'バイクLISS',s:'8分',how:['レベル3-4の軽い負荷','心拍110-120まで','少し汗ばむ程度'],pt:['ゆっくり','リラックス']},
+{n:'レッグスイング前後',s:'10回/側',how:['壁の横に立つ','片手を壁につけて安定','足を前後に振る','徐々に振り幅を大きく'],pt:['軸足の膝は軽く曲げる','上半身真っ直ぐ','反動使わず足の重さで']},
+{n:'レッグスイング左右',s:'10回/側',how:['壁に正面向いて両手をつく','片足を体の前で左右に振る','振り子のように10往復','反対側も'],pt:['上半身は壁にくっつけ固定','骨盤を回さない','足だけ動かす']},
+{n:'アームサークル',s:'前後10回',how:['足を肩幅','両腕を横に伸ばす','小さい円→大きい円','前回し10回・後ろ回し10回'],pt:['肩がすくまないようリラックス','最後は最大可動域']},
+{n:'ウォーキングランジ+ローテ',s:'8歩/側',how:['立位で足を揃える','右足を大きく前へ(ランジ)','両手を頭上で合掌','右側に上半身をねじる','1秒キープして戻す','立ち上がって左足','交互に8回ずつ'],pt:['前膝がつま先を超えない','腰でなく胸を回す','⚠️膝の向きに注意']},
+{n:'インチワーム',s:'5回',how:['足を肩幅','膝伸ばして前屈','手を1歩ずつ前に歩かせる','プランク姿勢まで','腕立て1回(できれば)','足を手に近づける','立ち上がる'],pt:['腰を反らせない','お尻上がりすぎない']},
+{n:'肩CARs',s:'各方向5回',how:['立位で足を肩幅','右腕を横に伸ばす','ゆっくり前方向に大きく1周','5回繰り返す','反対方向5回','左腕も'],pt:['速さより制御','腕だけ動かす']},
+{n:'ディープスクワットホールド',s:'60秒',how:['足を肩幅より少し広め','つま先を30度外向き','ゆっくりしゃがむ','両手を胸の前で合掌','肘で膝を外に押し開く','背中真っ直ぐ','60秒キープ'],pt:['⚠️かかと浮かせない','膝とつま先の向きを揃える','冷えてる日は短めに']},
+{n:'胸椎ローテ',s:'10回/側',how:['横向きに寝る','両膝90度に曲げて重ねる','両腕を前に伸ばす','下半身固定','上の腕をゆっくり反対側へ倒す','胸を天井に向ける','手が床に着くところまで','2-3秒キープ','10回繰り返す','反対側も'],pt:['下半身固定','腕だけじゃなく胸を開く','届かなくてもOK']}
+];
+const MUST5=[
+{n:'PNFハムストリング',s:'60秒/側 ×3-4',how:['仰向けに寝る','タオル用意','片足の足裏にタオルをかける','タオルの両端を両手で持つ','足を天井に向けて伸ばす','タオルを引いて足を顔の方に','20秒キープ(伸ばす)','足を押し戻すように6秒力入れる','一気に脱力(3秒)','さらに深く伸ばす(20秒)','3-4セット','反対側も'],pt:['膝はなるべく伸ばす','反対の足は床につけたまま','力70%でOK','脱力の瞬間がゴールデンタイム']},
+{n:'カエルストレッチ',s:'60-90秒',how:['四つん這い','両膝をできる限り外に','足首・脛は床に(足首90度)','両肘を床に','お尻をゆっくり後ろ下に','内ももが伸びる','60-90秒キープ'],pt:['痛みが出たら浅く','呼吸止めない','内ももの伸びを最優先']},
+{n:'ピジョンポーズ',s:'90秒/側',how:['四つん這いから','右足を前に、膝90度','右脛が体の前に横向き','左足は後ろにまっすぐ','上体をゆっくり前へ','両肘 or 額を床に','お尻の右側と左股関節前が伸びる','90秒キープ','反対側も'],pt:['お尻が浮かないように','後ろ足の膝つま先は真っ直ぐ後ろ']},
+{n:'カウチストレッチ',s:'60秒/側',how:['壁の前で片膝立ち','後ろ足の膝を床、つま先を壁に','クッションを膝の下に敷く','前足は90度','上体を起こす(壁から1歩離れる)','お腹を前に押し出す','後ろ足の前ももと股関節前が伸びる','60秒キープ'],pt:['お腹を前に押し出す','骨盤を立てる','痛みで壁から離れる']},
+{n:'90/90ストレッチ',s:'60秒/側',how:['床に座る','右足前:膝90度、右脛が体の前に横向き','左足後:膝90度、左脛が体の左側に横向き','両膝・脛が床にできるだけ近づく','背中まっすぐ','前足側にゆっくり倒す','60秒キープ','足入れ替えて反対側'],pt:['両膝浮いてもOK','背中を丸めない','お尻浮かせない']}
+];
+const CD={
+push:[{n:'ドアフレーム胸ストレッチ',s:'60秒/側',how:['ドアの枠の前に立つ','右肘90度','右前腕をドア枠に','肘の高さは肩と同じ','右足を前に1歩','体を左にねじる','胸の右側が伸びる','60秒'],pt:['肘の角度90度キープ','痛気持ちいい範囲']},
+{n:'クロスボディ肩ストレッチ',s:'60秒/側',how:['右腕を体の前に伸ばす(左肩方向)','左手で右肘を抱える','左手で右肘を体の方向に引く','右肩の後ろが伸びる','60秒'],pt:['肩がすくまないよう','体を回さない']},
+{n:'背中で握手',s:'60秒/側',how:['背中まっすぐ','右手を右肩の後ろから背中に(肘は天井)','左手を腰の下から背中に(手のひらは外向き)','背中で指を組む','届かなければタオル使用','60秒','上下入れ替えて反対も'],pt:['背中反らせない','首すくめない','呼吸止めない']},
+{n:'チャイルドポーズ',s:'90秒',how:['正座','膝を肩幅に開く','足の親指はつける','上体を前に倒す','両腕を頭の前にまっすぐ','額を床に','お尻はかかとから離さない','90秒','深呼吸'],pt:['肩がすくまないよう','リラックス']},
+{n:'コブラポーズ',s:'60秒',how:['うつ伏せ','足は伸ばして甲を床','両手を肩の真下','肘は体の横','手で押し上げて上体を反らす','肘は完全に伸ばさず軽く曲げる','胸を天井に','顎を引く','60秒'],pt:['腰だけで反らさない','肩すくめない','痛みが出たら浅く']}],
+pull:[{n:'広背筋ハング',s:'60秒/側',how:['柱を片手で掴む','お尻を後ろ・反対側に引く','広背筋(脇の下)が伸びる','60秒','反対側も'],pt:['ゆっくり伸ばす']},
+{n:'スレッドザニードル',s:'60秒/側',how:['四つん這い','右腕を左腕の下に通す','右肩を床につける','60秒','反対も'],pt:['ゆっくりねじる']},
+{n:'ネックストレッチ',s:'30秒/側',how:['頭を片側に傾ける','反対の手で軽く引く','首の側面を伸ばす','30秒','反対側'],pt:['強く引きすぎない']},
+{n:'シーテッド前屈',s:'90秒',how:['座位で両足を前に','上体を倒す','背中・もも裏を伸ばす','90秒'],pt:['背中丸めすぎない']},
+{n:'チャイルド+サイド',s:'60秒/側',how:['チャイルドポーズから両手を片側に寄せる','反対側の脇腹が伸びる','60秒','反対側'],pt:['深呼吸']}],
+legs:[{n:'PNFハム',s:'60秒/側',how:['マスト5種目参照'],pt:['深く伸ばす']},
+{n:'カエル',s:'90秒',how:['マスト5種目参照'],pt:['ゆっくり']},
+{n:'ピジョン',s:'90秒/側',how:['マスト5種目参照'],pt:['お尻深部']},
+{n:'カウチ',s:'60秒/側',how:['マスト5種目参照'],pt:['前もも']},
+{n:'90/90',s:'60秒/側',how:['マスト5種目参照'],pt:['骨盤可動域']},
+{n:'シーテッド前屈',s:'90秒',how:['座位で両足を前に','上体を倒す'],pt:['背中丸めすぎない']}],
+cond:[{n:'全身軽めストレッチ',s:'10分',how:['主要部位を全体的に','各部位30秒程度'],pt:['気持ちよく伸ばす']},
+{n:'呼吸整え',s:'3分',how:['深呼吸','心拍を落ち着かせる'],pt:['4秒吸って8秒吐く']}]
+};
+const MEAL=[
+{t:'朝食',n:'ソイ20g + ゆで卵2個 + おにぎり1個 + バナナ',k:600,p:40},
+{t:'間食',n:'プロテインバー or ナッツ少量',k:250,p:15},
+{t:'昼食',n:'もち麦ご飯 + 焼き魚 + 味噌汁 + 海藻サラダ + 納豆',k:700,p:45},
+{t:'トレ前',n:'バナナ1本 + ブラックコーヒー',k:100,p:1},
+{t:'トレ後',n:'ソイ20g + バナナ + クレアチン5g',k:220,p:21},
+{t:'夕食',n:'鶏むね蒸し + 玄米ご飯 + 野菜たっぷり + 味噌汁',k:550,p:40},
+{t:'寝る前',n:'ソイ20-30g',k:130,p:25}
+];
+const SUP=[
+{n:'ソイプロテイン',a:'朝20g・トレ後20g・寝る前20-30g',p:'★★★ 必須'},
+{n:'クレアチン',a:'毎日5g(トレ後 or 朝ソイに混ぜる)',p:'★★★ 必須'},
+{n:'EAA',a:'トレ中の水分に(Phase2から推奨)',p:'★★ 推奨'},
+{n:'フィッシュオイル',a:'毎日2-3g(関節保護・炎症抑制)',p:'★★ 推奨'},
+{n:'マルチビタミン',a:'朝食後',p:'★ 任意'}
+];
+const s={cv:'today',ci:0,wn:1,dn:0,cm:new Date(),tc:{},w:[],ch:[]};
+function ss(){try{localStorage.setItem('bc',JSON.stringify({ci:s.ci,wn:s.wn,dn:s.dn,tc:s.tc,w:s.w,ch:s.ch,lu:new Date().toISOString().split('T')[0]}))}catch(e){}}
+function ls(){try{const r=localStorage.getItem('bc');if(!r)return;const d=JSON.parse(r);s.ci=d.ci??0;s.wn=d.wn??1;s.dn=d.dn??0;s.tc=d.tc??{};s.w=d.w??[];s.ch=d.ch??[];const t=new Date().toISOString().split('T')[0];if(d.lu&&d.lu!==t)s.tc={}}catch(e){}}
+function sv(n,e){s.cv=n;document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.getElementById('v-'+n).classList.add('active');if(e)e.classList.add('active');r()}
+function tt(){return s.dn>0?'off':CYCLE[s.ci]}
+function rt(){const t=tt(),l=LBL[t],w=WT[s.wn],d=new Date();const ds=d.toLocaleDateString('ja-JP',{month:'long',day:'numeric',weekday:'short'});document.getElementById('hero').innerHTML=`<div class="hero ${l.c}"><div class="date">${ds}</div><div class="name">${l.e} ${l.n}</div><div class="week">${l.f}${t!=='off'?`<br><strong>Week ${s.wn}: ${w.n}</strong>`:''}</div></div>`;let m='';if(t==='off'){m+=`<div class="card"><h2>🧘 今日の柔軟性メニュー</h2><div class="section"><h3>朝モビリティ(10分)</h3>${rl(WU.slice(0,6),'m')}</div><div class="section"><h3>マスト5種目(夜)</h3>${rl(MUST5,'ms')}</div><div class="tip">💡 完全休養日:軽い散歩30分もおすすめ。役者業の蹴り上げ・開脚に直結する日。</div></div>`}else{const ex=EX[t]||EX['push'];const cd=CD[t];m+=`<div class="card"><h2>🔥 ウォームアップ(20分)</h2>${rl(WU,'wu')}</div><div class="card"><h2>💪 メイン種目(45分)</h2><div class="tip">Week ${s.wn}: ${w.d}<br>🎯 RIR 1-2で止める(あと1-2回できるところで終了)</div>${rl(ex,'mn')}</div><div class="card"><h2>🚴 有酸素(15-20分)</h2>${rl([{n:t==='legs'?'バイクLISS 15分':t==='pull'?'トレッドミル傾斜歩き 20分':'バイクLISS 15分',s:'心拍120-130',how:['心拍120-130維持','15-20分継続'],pt:['会話できる程度']}],'cd')}</div><div class="card"><h2>🧘 クールダウン(15分)</h2>${rl(cd,'co')}</div><div class="card"><h2>🥤 トレ後の補給</h2>${rl([{n:'ソイプロテイン 20g',s:'',how:['トレ後30分以内'],pt:['バナナと一緒に']},{n:'バナナ 1本',s:'',how:[''],pt:['糖質で吸収促進']},{n:'クレアチン 5g',s:'',how:['プロテインに混ぜる'],pt:['毎日必須']},{n:'水 コップ2杯以上',s:'',how:['多めに'],pt:['脱水予防']}],'su')}</div>${t==='legs'?`<div class="warn">⚠️ 左膝への配慮:膝とつま先の向きを揃える。足幅は腰幅固定。冷えてる日はウォームアップ延長。違和感あれば即中止。</div>`:''}<div class="card"><button class="btn" onclick="md()">🎉 今日のトレを完了する</button></div>`}document.getElementById('menu').innerHTML=m}
+function rl(items,px){return items.map((it,i)=>{const id=`${px}-${i}`;const ck=s.tc[id]?'on':'';const dn=s.tc[id]?'done':'';const hd=it.how&&it.how.length>0&&it.how[0]?`<button class="detail-btn" onclick="ed('${px}',${i})">やり方</button>`:'';return `<div class="item ${dn}"><div class="check ${ck}" onclick="tc('${id}')"></div><div class="info"><div class="n">${it.n}${it.s?' <span style="color:#7a8290;font-weight:400;font-size:11px">・'+it.s+'</span>':''}</div>${it.t?`<div class="d" style="color:#F39C12">${it.t}</div>`:''}</div>${hd}</div>`}).join('')}
+function ed(px,i){let it;const t=tt();if(px==='wu')it=WU[i];else if(px==='ms')it=MUST5[i];else if(px==='m')it=WU[i];else if(px==='mn'){const ex=EX[t]||EX['push'];it=ex[i]}else if(px==='co')it=CD[t][i];else return;if(!it)return;let h=`<h2>${it.n}</h2>`;if(it.s)h+=`<p style="color:#F39C12;font-weight:600">${it.s}</p>`;if(it.t)h+=`<p style="color:#B3D4F0">🎯 ${it.t}</p>`;if(it.how&&it.how.length){h+=`<div class="detail-box"><div class="lbl">📋 やり方</div><ol>${it.how.map(x=>`<li>${x}</li>`).join('')}</ol></div>`}if(it.pt&&it.pt.length){h+=`<div class="detail-box"><div class="lbl">✅ ポイント</div><ul>${it.pt.map(x=>`<li>${x}</li>`).join('')}</ul></div>`}if(it.ng&&it.ng.length){h+=`<div class="detail-box" style="background:rgba(231,76,60,.1);border:1px solid rgba(231,76,60,.3)"><div class="lbl" style="color:#E74C3C">❌ NG</div><ul>${it.ng.map(x=>`<li>${x}</li>`).join('')}</ul></div>`}h+=`<button class="btn" onclick="mcx()">閉じる</button>`;sm(h)}
+function tc(id){s.tc[id]=!s.tc[id];ss();r()}
+function md(){const t=tt();if(t==='off'){alert('OFF日です');return}const today=new Date().toISOString().split('T')[0];s.ch.push({date:today,type:t,week:s.wn,completed:true});s.dn=1;s.ci=(s.ci+1)%4;if(s.ci===0)s.wn=(s.wn%4)+1;s.tc={};ss();sm(`<h2>🎉 完了しました!</h2><p>お疲れ様!次はOFF日で、その次は<strong>${LBL[CYCLE[s.ci]].n}日</strong>です。</p><button class="btn" onclick="mcx()">OK</button>`);r()}
+function mr(){sm(`<h2>⚠️ サイクルリセット</h2><p>現在のサイクルとWeek番号を初期化しますか?(体重記録は残ります)</p><button class="btn dan" onclick="rc()">リセット</button><button class="btn sec" onclick="mcx()">キャンセル</button>`)}
+function rc(){s.ci=0;s.wn=1;s.dn=0;s.tc={};ss();mcx();r()}
+function rcal(){const y=s.cm.getFullYear(),mo=s.cm.getMonth();document.getElementById('ct').textContent=`${y}年 ${mo+1}月`;const fd=new Date(y,mo,1),ld=new Date(y,mo+1,0),sw=fd.getDay(),dim=ld.getDate();const wd=['日','月','火','水','木','金','土'];let h=wd.map(w=>`<div class="cal-dh">${w}</div>`).join('');for(let i=0;i<sw;i++)h+='<div class="cal-day other"></div>';const td=new Date(),ts=td.toISOString().split('T')[0];for(let d=1;d<=dim;d++){const dt=new Date(y,mo,d),ds=dt.toISOString().split('T')[0],ist=ds===ts;const hs=s.ch.find(x=>x.date===ds);let tl='';if(hs){const l=LBL[hs.type];tl=`<div class="type ${l.c}">${l.n.substring(0,4)}</div>`}h+=`<div class="cal-day ${ist?'today':''}" onclick="scd('${ds}')">${d}${tl}${hs?.completed?'<div class="dot"></div>':''}</div>`}document.getElementById('cg').innerHTML=h;rcp()}
+function cm(dl){s.cm.setMonth(s.cm.getMonth()+dl);rcal()}
+function scd(ds){const hs=s.ch.find(x=>x.date===ds);if(hs){const l=LBL[hs.type],w=WT[hs.week];sm(`<h2>${l.e} ${l.n}</h2><p><strong>日付:</strong> ${ds}</p><p><strong>種目:</strong> ${l.f}</p><p><strong>週:</strong> Week ${hs.week} - ${w.n}</p><p><strong>状態:</strong> ${hs.completed?'✅ 完了':'未完了'}</p><button class="btn sec" onclick="dh('${ds}')">この記録を削除</button><button class="btn" onclick="mcx()">閉じる</button>`)}else{sm(`<h2>${ds}</h2><p>この日の記録はありません。</p><button class="btn" onclick="mcx()">閉じる</button>`)}}
+function dh(ds){s.ch=s.ch.filter(x=>x.date!==ds);ss();mcx();rcal()}
+function rcp(){const ph=`<div style="font-size:12px;color:#7a8290;margin-bottom:6px">Week ${s.wn}: <strong style="color:#F39C12">${WT[s.wn].n}</strong></div>`;const cs=CYCLE.map((t,i)=>{const l=LBL[t],id=i<s.ci,nx=i===s.ci&&s.dn===0;return `<div style="display:flex;align-items:center;gap:6px;padding:6px;background:${nx?'#22282f':'transparent'};border-radius:6px;${nx?'border:1px solid #F39C12;':''}"><div style="width:22px;height:22px;border-radius:50%;background:${id?'#27AE60':'#4a5260'};display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:bold">${id?'✓':i+1}</div><div><div style="font-weight:600;font-size:13px">${l.e} ${l.n}</div><div style="font-size:10px;color:#7a8290">${l.f}</div></div></div>`}).join('');document.getElementById('cp').innerHTML=ph+`<div style="display:flex;flex-direction:column;gap:3px">${cs}</div>`}
+function rb(){const st=s.w.slice(-1)[0],sr=s.w[0];const cw=st?.weight??70.6,cb=st?.bodyFat??18.8,gw=66,gb=8;const swt=sr?.weight??70.6,wc=cw-swt,bc=cb-(sr?.bodyFat??18.8);document.getElementById('bs').innerHTML=`<div class="stat"><div class="stat-l">体重</div><div class="stat-v">${cw}<span class="stat-u"> kg</span></div>${s.w.length>1?`<div class="stat-c ${wc<0?'d':'u'}">${wc>0?'+':''}${wc.toFixed(1)}kg</div>`:''}</div><div class="stat"><div class="stat-l">体脂肪率</div><div class="stat-v">${cb}<span class="stat-u"> %</span></div>${s.w.length>1?`<div class="stat-c ${bc<0?'d':'u'}">${bc>0?'+':''}${bc.toFixed(1)}%</div>`:''}</div><div class="stat"><div class="stat-l">目標体重</div><div class="stat-v">${gw}<span class="stat-u"> kg</span></div><div class="stat-c">残り ${(cw-gw).toFixed(1)}kg</div></div><div class="stat"><div class="stat-l">目標体脂肪</div><div class="stat-v">${gb}<span class="stat-u"> %</span></div><div class="stat-c">残り ${(cb-gb).toFixed(1)}%</div></div>`;rwc();rgp(cw,cb)}
+function rwc(){const c=document.getElementById('wc');if(s.w.length<2){c.innerHTML='<div class="empty"><div class="ic">📊</div><div>記録が2つ以上あるとグラフが表示されます</div></div>';return}const ws=s.w,mn=Math.min(...ws.map(x=>x.weight))-1,mx=Math.max(...ws.map(x=>x.weight))+1,pad=30;const pts=ws.map((w,i)=>{const x=pad+(i/(ws.length-1))*(320-pad*2);const y=pad+((mx-w.weight)/(mx-mn))*(180-pad*2);return `${x},${y}`}).join(' ');const dots=ws.map((w,i)=>{const x=pad+(i/(ws.length-1))*(320-pad*2);const y=pad+((mx-w.weight)/(mx-mn))*(180-pad*2);return `<circle cx="${x}" cy="${y}" r="4" fill="#F39C12"/>`}).join('');c.innerHTML=`<svg width="100%" viewBox="0 0 320 180" style="max-width:320px"><line x1="${pad}" y1="${pad}" x2="${pad}" y2="${180-pad}" stroke="#2a2f36"/><line x1="${pad}" y1="${180-pad}" x2="${320-pad}" y2="${180-pad}" stroke="#2a2f36"/><line x1="${pad}" y1="${pad+((mx-66)/(mx-mn))*(180-pad*2)}" x2="${320-pad}" y2="${pad+((mx-66)/(mx-mn))*(180-pad*2)}" stroke="#27AE60" stroke-dasharray="3,3"/><text x="${320-pad-30}" y="${pad+((mx-66)/(mx-mn))*(180-pad*2)-4}" fill="#27AE60" font-size="10">目標</text><polyline points="${pts}" fill="none" stroke="#F39C12" stroke-width="2"/>${dots}<text x="${pad-25}" y="${pad+4}" fill="#7a8290" font-size="10">${mx.toFixed(1)}</text><text x="${pad-25}" y="${180-pad+3}" fill="#7a8290" font-size="10">${mn.toFixed(1)}</text></svg>`}
+function rgp(cw,cb){const sw=s.w[0]?.weight??70.6,gw=66,tt=sw-gw,al=sw-cw,pc=tt>0?Math.min(100,Math.max(0,(al/tt)*100)):0;document.getElementById('gp').innerHTML=`<div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;font-size:11px;color:#7a8290;margin-bottom:3px"><span>${sw}kg (スタート)</span><span>${gw}kg (ゴール)</span></div><div style="background:#22282f;height:10px;border-radius:5px;overflow:hidden"><div style="background:linear-gradient(90deg,#27AE60,#F39C12);height:100%;width:${pc}%;transition:width .5s"></div></div><div style="text-align:center;font-size:13px;margin-top:6px;color:#F39C12;font-weight:700">${pc.toFixed(0)}% 達成</div></div>`}
+function rmv(){document.getElementById('dn').innerHTML=`<div class="stat-grid"><div class="stat"><div class="stat-l">カロリー</div><div class="stat-v">2400<span class="stat-u"> kcal</span></div></div><div class="stat"><div class="stat-l">タンパク質</div><div class="stat-v">140<span class="stat-u"> g</span></div></div><div class="stat"><div class="stat-l">脂質</div><div class="stat-v">70<span class="stat-u"> g</span></div></div><div class="stat"><div class="stat-l">炭水化物</div><div class="stat-v">315<span class="stat-u"> g</span></div></div></div><div class="tip">Phase 1の目標値。基礎代謝1,603kcal × 活動係数1.6-1.75 = 消費2,560-2,800kcalに対して-200kcalの軽い赤字設定。</div>`;document.getElementById('mp').innerHTML=MEAL.map(m=>`<div class="meal"><div class="t">${m.t}</div><div class="n">${m.n}</div><div class="m">${m.k}kcal / タンパク質${m.p}g</div></div>`).join('');document.getElementById('sp').innerHTML=SUP.map(x=>`<div class="meal"><div class="t">${x.p}</div><div class="n">${x.n}</div><div class="m">${x.a}</div></div>`).join('')}
+function sm(h){document.getElementById('mm').innerHTML=h;document.getElementById('mbg').classList.add('show')}
+function mc(e){if(e.target.id==='mbg')mcx()}
+function mcx(){document.getElementById('mbg').classList.remove('show')}
+function mw(){const t=new Date().toISOString().split('T')[0];sm(`<h2>📊 今日の記録</h2><div class="fg"><label>日付</label><input type="date" id="wd" value="${t}"></div><div class="fg"><label>体重 (kg)</label><input type="number" step="0.1" id="ww" placeholder="70.6" inputmode="decimal"></div><div class="fg"><label>体脂肪率 (%)</label><input type="number" step="0.1" id="wb" placeholder="18.8" inputmode="decimal"></div><div class="fg"><label>骨格筋率 (%) - 任意</label><input type="number" step="0.1" id="wm" placeholder="42.7" inputmode="decimal"></div><button class="btn" onclick="sw()">保存</button><button class="btn sec" onclick="mcx()">キャンセル</button>`)}
+function sw(){const d=document.getElementById('wd').value,w=parseFloat(document.getElementById('ww').value),b=parseFloat(document.getElementById('wb').value),m=parseFloat(document.getElementById('wm').value);if(!d||isNaN(w)){alert('日付と体重は必須です');return}s.w=s.w.filter(x=>x.date!==d);s.w.push({date:d,weight:w,bodyFat:isNaN(b)?null:b,muscleMass:isNaN(m)?null:m});s.w.sort((a,b)=>a.date.localeCompare(b.date));ss();mcx();r()}
+function el(t){const l=LBL[t],ex=EX[t];sm(`<h2>${l.e} ${l.n} 種目一覧</h2>${ex.map(x=>`<div class="detail-box"><div style="font-weight:700;margin-bottom:3px">${x.n}</div><div style="font-size:10px;color:#F39C12;margin-bottom:3px">🎯 ${x.t}</div><div style="font-size:12px;color:#B3D4F0;margin-bottom:6px">${x.s}</div>${x.how?`<div style="font-size:11px;line-height:1.5;color:#e8e8e8"><strong style="color:#F39C12">📋 やり方:</strong><ol style="padding-left:16px;margin-top:3px">${x.how.map(y=>`<li>${y}</li>`).join('')}</ol></div>`:''}${x.pt?`<div style="font-size:11px;line-height:1.5;color:#e8e8e8;margin-top:6px"><strong style="color:#27AE60">✅ ポイント:</strong><ul style="padding-left:16px;margin-top:3px">${x.pt.map(y=>`<li>${y}</li>`).join('')}</ul></div>`:''}${x.ng?`<div style="font-size:11px;line-height:1.5;color:#e8e8e8;margin-top:6px"><strong style="color:#E74C3C">❌ NG:</strong><ul style="padding-left:16px;margin-top:3px">${x.ng.map(y=>`<li>${y}</li>`).join('')}</ul></div>`:''}</div>`).join('')}<button class="btn" onclick="mcx()">閉じる</button>`)}
+function sl(){sm(`<h2>🧘 柔軟性メニュー</h2><h3>🌅 ウォームアップ(動的)</h3>${WU.map(x=>`<div class="detail-box"><div style="font-weight:700">${x.n}</div><div style="font-size:12px;color:#B3D4F0">${x.s}</div>${x.how?`<div style="font-size:11px;line-height:1.5;margin-top:4px"><strong style="color:#F39C12">やり方:</strong><ol style="padding-left:16px">${x.how.map(y=>`<li>${y}</li>`).join('')}</ol></div>`:''}${x.pt?`<div style="font-size:11px;line-height:1.5;margin-top:4px"><strong style="color:#27AE60">ポイント:</strong><ul style="padding-left:16px">${x.pt.map(y=>`<li>${y}</li>`).join('')}</ul></div>`:''}</div>`).join('')}<h3>🌙 マスト5種目(毎日)</h3>${MUST5.map(x=>`<div class="detail-box"><div style="font-weight:700">${x.n}</div><div style="font-size:12px;color:#B3D4F0">${x.s}</div>${x.how?`<div style="font-size:11px;line-height:1.5;margin-top:4px"><strong style="color:#F39C12">やり方:</strong><ol style="padding-left:16px">${x.how.map(y=>`<li>${y}</li>`).join('')}</ol></div>`:''}${x.pt?`<div style="font-size:11px;line-height:1.5;margin-top:4px"><strong style="color:#27AE60">ポイント:</strong><ul style="padding-left:16px">${x.pt.map(y=>`<li>${y}</li>`).join('')}</ul></div>`:''}</div>`).join('')}<button class="btn" onclick="mcx()">閉じる</button>`)}
+function r(){if(s.cv==='today')rt();else if(s.cv==='cal')rcal();else if(s.cv==='body')rb();else if(s.cv==='menu')rmv()}
+function init(){ls();if(s.w.length===0){s.w.push({date:'2026-05-11',weight:70.6,bodyFat:18.8,muscleMass:42.7});ss()}r()}
+init();
+</script>
+</body>
+</html>
